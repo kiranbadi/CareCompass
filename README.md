@@ -33,6 +33,12 @@ This is an MVP approximation of semantic search using a curated concept dictiona
 
 ## What works
 
+The care seeker **Messages** section includes three fictional conversations, search, unread filtering, new conversations with sample providers, quick replies, and a multiline composer. **Send message** saves to browser local storage for the signed-in care seeker; it does not deliver messages or generate automatic replies. Conversations reload when reopened. Ctrl/Cmd+Enter sends locally; Enter adds a line. No backend chat integration or real notifications are included.
+
+Care seekers now have browser-only **Care recipients** and **Sessions** modules. They start with three fictional recipients and three sample sessions. Add/edit recipient profiles, view preferences, and use **Plan session** to preselect a recipient. Add/edit sample sessions, filter by status, mark them complete, or cancel with confirmation. Data persists per account in browser local storage; these actions do not make real bookings, notify providers, or use the database. Use fictional information for this demo.
+
+Care providers can manage multiple credentials and checks under **Credentials & checks** in their signed-in workspace. Forms support names, types, organizations, references, dates, status, and notes, with add/edit/remove actions. Records persist in browser local storage under a provider-specific key and reload when the workspace is reopened. They stay on that browser/device until removed or browser storage is cleared. This feature has no database/API integration, document uploads, or verification approval; all saved statuses are self-reported.
+
 - Public registration for `care_seeker` and `care_provider`; public admin creation is rejected.
 - bcrypt passwords (cost 12), email validation/normalization and international phone validation.
 - 15-minute signed JWTs with role/verification claims, plus hashed, rotating refresh tokens in HttpOnly cookies.

@@ -1,0 +1,7 @@
+# Loopback development only. Production uses Secure cookies from application.yml.
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:55433/carebridge}
+    password: ${DB_PASSWORD:carebridge-local-only}
+auth:
+  cookie-secure: false

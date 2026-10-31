@@ -1,0 +1,23 @@
+{
+  "name": "carebridge",
+  "private": true,
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @carebridge/web",
+    "build": "npm run build --workspace @carebridge/web",
+    "test": "npm run test --workspace @carebridge/web",
+    "test:api": "cd services/api && ./mvnw test",
+    "dev:api": "bash scripts/run-api.sh",
+    "setup": "bash scripts/setup-local.sh",
+    "db:up": "docker compose up -d db",
+    "db:test": "docker compose --profile test up -d test-db"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "devDependencies": {
+    "prettier": "3.9.10"
+  }
+}

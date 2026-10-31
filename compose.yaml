@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-carebridge}
+      POSTGRES_USER: ${POSTGRES_USER:-carebridge}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-carebridge-local-only}
+    ports: ["127.0.0.1:${POSTGRES_PORT:-55433}:5432"]
+    volumes: ["carebridge-db:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  test-db:
+    image: postgres:17-alpine
+    profiles: ["test"]
+    environment:
+      POSTGRES_DB: carebridge_test
+      POSTGRES_USER: carebridge_test
+      POSTGRES_PASSWORD: test-only
+    ports: ["127.0.0.1:55432:5432"]
+    tmpfs: ["/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carebridge_test -d carebridge_test"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  api:
+    profiles: ["app"]
+    build: ./services/api
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-carebridge}
+      DB_USERNAME: ${POSTGRES_USER:-carebridge}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-carebridge-local-only}
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:-}
+    depends_on:
+      db:
+        condition: service_healthy
+  web:
+    profiles: ["app"]
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports: ["127.0.0.1:8088:8080"]
+    depends_on: ["api"]
+volumes:
+  carebridge-db:

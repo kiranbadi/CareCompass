@@ -1,33 +1,44 @@
 services:
+  # Default: persistent development database, bound to loopback only.
   db:
     image: postgres:17-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-carebridge}
       POSTGRES_USER: ${POSTGRES_USER:-carebridge}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-carebridge-local-only}
-    ports: ["127.0.0.1:${POSTGRES_PORT:-55433}:5432"]
-    volumes: ["carebridge-db:/var/lib/postgresql/data"]
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-55433}:5432"
+    volumes:
+      - carebridge-db:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 3s
       timeout: 3s
       retries: 20
+
+  # Optional: disposable PostgreSQL instance for integration tests.
   test-db:
     image: postgres:17-alpine
-    profiles: ["test"]
+    profiles:
+      - test
     environment:
       POSTGRES_DB: carebridge_test
       POSTGRES_USER: carebridge_test
       POSTGRES_PASSWORD: test-only
-    ports: ["127.0.0.1:55432:5432"]
-    tmpfs: ["/var/lib/postgresql/data"]
+    ports:
+      - "127.0.0.1:55432:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U carebridge_test -d carebridge_test"]
       interval: 3s
       timeout: 3s
       retries: 20
+
+  # Optional: full local website stack (run npm run setup first).
   api:
-    profiles: ["app"]
+    profiles:
+      - app
     build: ./services/api
     environment:
       SPRING_PROFILES_ACTIVE: local
@@ -38,12 +49,17 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
   web:
-    profiles: ["app"]
+    profiles:
+      - app
     build:
       context: .
       dockerfile: apps/web/Dockerfile
-    ports: ["127.0.0.1:8088:8080"]
-    depends_on: ["api"]
+    ports:
+      - "127.0.0.1:8088:8080"
+    depends_on:
+      - api
+
 volumes:
   carebridge-db:

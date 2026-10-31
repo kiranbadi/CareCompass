@@ -21,7 +21,7 @@ npm run dev             # website on http://127.0.0.1:5173
 
 Create a care seeker or care provider account from the website, then sign in. Use a fictional international phone number for hackathon demos. Phone verification starts pending; there is no fake OTP or verification bypass.
 
-The development database credentials in `.env.example` are **local-only**. Port 55433 avoids common local PostgreSQL conflicts. `npm run setup` will never overwrite an existing `.env`. To change the database port, update both `POSTGRES_PORT` and `DB_URL` in `.env`. API and frontend ports can be changed with `PORT` and Vite's `--port` option; update the Vite proxy if the API port changes.
+`npm run setup` generates `.env` directly with **local-only** database credentials and a random JWT signing key; no template file is needed. Port 55433 avoids common local PostgreSQL conflicts. Setup will never overwrite an existing `.env`. To change the database port, update both `POSTGRES_PORT` and `DB_URL` in `.env`. API and frontend ports can be changed with `PORT` and Vite's `--port` option; update the Vite proxy if the API port changes.
 
 ## What works
 

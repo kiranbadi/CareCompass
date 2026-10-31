@@ -23,6 +23,9 @@ import { useAuth } from "../auth/AuthContext";
 import { authClient } from "../auth/client";
 import type { AuditEvent, Role, UserProfile } from "../auth/types";
 import { skipToContent } from "../navigation";
+import { CredentialsManager } from "../provider/CredentialsManager";
+import { CareWorkspace } from "../seeker/CareWorkspace";
+import { Messages } from "../messages/Messages";
 
 const roleLabels: Record<Role, string> = {
   site_admin: "Site administrator",
@@ -47,7 +50,7 @@ const panels: Record<
 > = {
   recipients: {
     title: "Care recipients",
-    description: "A thoughtful picture of each person’s care needs.",
+    description: "Manage your sample care circle and support preferences.",
     items: [
       "Profiles support recipients from ages 0–100.",
       "Support categories include mobility, sensory, cognitive, developmental, and other needs.",
@@ -56,7 +59,7 @@ const panels: Record<
   },
   sessions: {
     title: "Time for better care.",
-    description: "Bring every booking into one place.",
+    description: "Plan and manage sample care sessions in this browser.",
     items: [
       "Find the right professional for your family.",
       "Review session details and schedules.",
@@ -65,7 +68,8 @@ const panels: Record<
   },
   messages: {
     title: "A conversation can make a difference.",
-    description: "A place to connect with your care professional.",
+    description:
+      "Keep your sample care conversations together in this browser.",
     items: [
       "Chats will be available after the messaging module is connected.",
       "No messages or recipient information are stored by this sample workspace.",
@@ -73,7 +77,8 @@ const panels: Record<
   },
   credentials: {
     title: "Your experience matters.",
-    description: "Help families get to know the professional behind the care.",
+    description:
+      "Manage your professional credentials and checks on this device.",
     items: [
       "Professional license: not submitted",
       "Background check: not initiated",
@@ -271,7 +276,19 @@ export function Dashboard({ user }: { user: UserProfile }) {
                 : panels[selected]?.description}
           </p>
         </div>
-        {selected === "audit" && user.role === "site_admin" ? (
+        {(selected === "recipients" || selected === "sessions") &&
+        user.role === "care_seeker" ? (
+          <CareWorkspace
+            key={user.id}
+            userId={user.id}
+            view={selected}
+            onNavigate={navigate}
+          />
+        ) : selected === "messages" && user.role === "care_seeker" ? (
+          <Messages key={user.id} userId={user.id} />
+        ) : selected === "credentials" && user.role === "care_provider" ? (
+          <CredentialsManager key={user.id} userId={user.id} />
+        ) : selected === "audit" && user.role === "site_admin" ? (
           <section
             className="dashboard-card audit-card"
             aria-label="Audit events"
@@ -475,7 +492,11 @@ export function Dashboard({ user }: { user: UserProfile }) {
         <footer className="dashboard-footer">
           <span>CareBridge · People first, always.</span>
           <span>
-            Authentication is live. Care-management screens are MVP previews.
+            {user.role === "care_seeker"
+              ? "Care recipients, sessions, and messages are browser-only demos. No real bookings or messages are sent."
+              : user.role === "care_provider"
+                ? "Credentials and checks are stored in this browser. Other care screens are MVP previews."
+                : "Authentication is live. Care-management screens are MVP previews."}
           </span>
         </footer>
       </main>

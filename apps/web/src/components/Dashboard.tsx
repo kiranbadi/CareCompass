@@ -22,6 +22,7 @@ import { Brand } from "./Brand";
 import { useAuth } from "../auth/AuthContext";
 import { authClient } from "../auth/client";
 import type { AuditEvent, Role, UserProfile } from "../auth/types";
+import { skipToContent } from "../navigation";
 
 const roleLabels: Record<Role, string> = {
   site_admin: "Site administrator",
@@ -172,11 +173,13 @@ export function Dashboard({ user }: { user: UserProfile }) {
 
   return (
     <div className="workspace">
-      <a className="skip-link" href="#workspace-main">
+      <a className="skip-link" href="#workspace-main" onClick={skipToContent}>
         Skip to workspace
       </a>
       <header className="mobile-header">
-        <Brand />
+        <a className="brand-home" href="#/" aria-label="CareBridge home">
+          <Brand />
+        </a>
         <button
           className="icon-button"
           aria-label="Toggle navigation"
@@ -188,7 +191,9 @@ export function Dashboard({ user }: { user: UserProfile }) {
       </header>
       <aside className={`sidebar ${menuOpen ? "is-open" : ""}`}>
         <div className="sidebar-brand">
-          <Brand />
+          <a className="brand-home" href="#/" aria-label="CareBridge home">
+            <Brand />
+          </a>
         </div>
         <span className="eyebrow sidebar-label">YOUR WORKSPACE</span>
         <nav aria-label="Main navigation">
@@ -230,7 +235,7 @@ export function Dashboard({ user }: { user: UserProfile }) {
           {pending ? "Signing out…" : "Sign out"}
         </button>
       </aside>
-      <main className="workspace-main" id="workspace-main">
+      <main className="workspace-main" id="workspace-main" tabIndex={-1}>
         <header className="workspace-header">
           <div>
             <span className="breadcrumb">

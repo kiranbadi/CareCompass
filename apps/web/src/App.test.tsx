@@ -31,6 +31,7 @@ const guardian = {
 
 describe("CareBridge authentication", () => {
   beforeEach(() => {
+    window.history.replaceState(null, "", "/#/login");
     vi.mocked(authClient.restoreSession).mockResolvedValue(null);
     vi.mocked(authClient.onSessionExpired).mockReturnValue(() => {});
   });

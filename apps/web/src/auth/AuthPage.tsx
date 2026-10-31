@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   ArrowRight,
   Check,
@@ -14,11 +14,17 @@ import { Brand } from "../components/Brand";
 import { useAuth } from "./AuthContext";
 import { authClient } from "./client";
 import type { PublicRole } from "./types";
+import { navigatePage, skipToContent } from "../navigation";
 
-export function AuthPage() {
+export function AuthPage({
+  mode,
+  initialRole = "care_seeker",
+}: {
+  mode: "login" | "register";
+  initialRole?: PublicRole;
+}) {
   const { signIn } = useAuth();
-  const [mode, setMode] = useState<"login" | "register">("login");
-  const [role, setRole] = useState<PublicRole>("care_seeker");
+  const [role, setRole] = useState<PublicRole>(initialRole);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -30,9 +36,17 @@ export function AuthPage() {
   const [help, setHelp] = useState(false);
   const errorRef = useRef<HTMLDivElement>(null);
   const registering = mode === "register";
+  useEffect(() => {
+    setRole(initialRole);
+  }, [initialRole]);
+  useEffect(() => {
+    setPassword("");
+    setConfirmation("");
+    setVisible(false);
+  }, [mode]);
 
   function switchMode(next: "login" | "register"): void {
-    setMode(next);
+    navigatePage(next === "login" ? "/login" : "/register");
     setPassword("");
     setConfirmation("");
     setError(null);
@@ -84,11 +98,13 @@ export function AuthPage() {
 
   return (
     <div className="auth-page">
-      <a className="skip-link" href="#auth-form">
+      <a className="skip-link" href="#auth-form" onClick={skipToContent}>
         Skip to sign in
       </a>
       <header className="site-header">
-        <Brand />
+        <a className="brand-home" href="#/" aria-label="CareBridge home">
+          <Brand />
+        </a>
         <div className="header-action">
           <span>
             {registering
@@ -171,6 +187,7 @@ export function AuthPage() {
           className="form-panel"
           aria-labelledby="form-title"
           id="auth-form"
+          tabIndex={-1}
         >
           <div className="form-inner">
             <span className="form-illustration">

@@ -19,7 +19,15 @@ In another terminal:
 npm run dev             # website on http://127.0.0.1:5173
 ```
 
-Create a care seeker or care provider account from the website, then sign in. Use a fictional international phone number for hackathon demos. Phone verification starts pending; there is no fake OTP or verification bypass.
+The website opens on a public landing page with care seeker/provider sections, About Us, one shared registration form, and shared login. Home links to public previews of both role modules. Create a care seeker or care provider account, then sign in to enter the protected workspace. Use a fictional international phone number for hackathon demos. Phone verification starts pending; there is no fake OTP or verification bypass.
+
+## Home and natural-language demo search
+
+Home and module previews work even if the API is offline. Browser hash routes provide shareable entry points: `/#/`, `/#/login`, `/#/register`, `/#/care-seeker`, `/#/care-provider`, and `/#/workspace`. Role-specific registration links preselect a role on the same form; visitors can change it before registering. Authentication and role checks still use the real backend.
+
+Try a home-page request such as **“Weekend care for a child with autism under $30 an hour”** or **“A companion for my dad in Austin on weekdays.”** The local search recognizes common care concepts and synonyms, then filters six fictional provider profiles by support needs, location, schedule, and maximum hourly rate. Results show the interpreted constraints. Supported demo locations are Austin, Seattle, New York/NYC, and Boston; unsupported locations and requests with no matches show an explicit empty state.
+
+This is an MVP approximation of semantic search using a curated concept dictionary. It does not use a language model, learned embeddings, a real provider directory, or live availability. Complex phrasing, negation, disjunctions, precise dates/distances, and arbitrary locations are not fully understood. No search text is sent to the backend or persisted. A future Spring AI/embedding implementation can replace the local matcher without changing the public experience.
 
 `npm run setup` generates `.env` directly with **local-only** database credentials and a random JWT signing key; no template file is needed. Port 55433 avoids common local PostgreSQL conflicts. Setup will never overwrite an existing `.env`. To change the database port, update both `POSTGRES_PORT` and `DB_URL` in `.env`. API and frontend ports can be changed with `PORT` and Vite's `--port` option; update the Vite proxy if the API port changes.
 

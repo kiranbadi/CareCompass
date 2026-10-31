@@ -22,7 +22,7 @@ server:
   tomcat:
     max-http-form-post-size: 16KB
 auth:
-  jwt-secret: ${AUTH_JWT_SECRET}
+  jwt-secret: VGhpcy1Jcy1BLURlbW8tSldULVNlY3JldC0zMkJ5dGVzISE=
   issuer: carebridge-api
   audience: carebridge-web
   cookie-secure: true

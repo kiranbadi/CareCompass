@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: ${TEST_DB_URL:jdbc:postgresql://localhost:55432/carebridge_test}
+    username: carebridge_test
+    password: test-only
+auth:
+  jwt-secret: dGVzdC1vbmx5LXNpZ25pbmcta2V5LW5vdC1mb3ItcHJvZHVjdGlvbi11c2Uh
+  cookie-secure: false
+  rate-limit: 1000
+  bcrypt-strength: 4
